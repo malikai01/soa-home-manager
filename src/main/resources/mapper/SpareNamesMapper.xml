@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mlk.soa.home.manager.mapper.SpareNamesMapper">
+    <resultMap id="BaseResultMap" type="com.mlk.soa.home.manager.model.po.SpareNames">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="type" property="type"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="is_show" property="isShow"/>
+        <result column="family_id" property="familyId"/>
+        <result column="memo" property="memo"/>
+    </resultMap>
+
+    <sql id="Base_Column_List_Insert">
+        name, type, create_time, update_time, is_show, family_id, memo
+    </sql>
+
+    <sql id="Base_Column_List">
+        id,
+        <include refid="Base_Column_List_Insert"/>
+    </sql>
+
+    <select id="queryNamesByPage" resultMap="BaseResultMap">
+        SELECT * from spare_names where family_id = #{familyId}
+        <if test=" type !=null and type !=''">
+            and type = #{type}
+        </if>
+        <if test=" name !=null and name !=''">
+            and name like '%${name}%'
+        </if>
+        <if test=" memo !=null and memo !=''">
+            and memo like '%${memo}%'
+        </if>
+        ORDER BY update_time DESC
+    </select>
+    <select id="queryById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT * FROM spare_names where id = #{id}
+    </select>
+
+    <insert id="add" parameterType="com.mlk.soa.home.manager.model.po.SpareNames" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into spare_names (<include refid="Base_Column_List_Insert"/>) values
+        ( #{name}, #{type}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, #{isShow}, #{familyId}, #{memo})
+    </insert>
+
+    <update id="edit">
+        update spare_names
+        <set>
+            update_time = CURRENT_TIMESTAMP,
+
+            <if test="name != null">
+                name = #{name},
+            </if>
+
+            <if test="type != null">
+                type = #{type},
+            </if>
+
+            <if test="isShow != null">
+                is_show = #{isShow},
+            </if>
+
+            <if test="familyId != null">
+                family_id = #{familyId},
+            </if>
+
+            <if test="memo != null">
+                memo = #{memo},
+            </if>
+
+        </set>
+        where id=#{id}
+    </update>
+</mapper>

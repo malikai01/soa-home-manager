@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mlk.soa.home.manager.mapper.ManagerLoginMapper">
+    <resultMap id="BaseResultMap" type="com.mlk.soa.home.manager.model.po.ManagerLogin">
+        <id column="id" property="id"/>
+        <result column="login_name" property="loginName"/>
+        <result column="password" property="password"/>
+        <result column="register_time" property="registerTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="login_nick_name" property="loginNickName"/>
+        <result column="card_number" property="cardNumber"/>
+        <result column="card_number_attachId" property="cardNumberAttachId"/>
+        <result column="card_number_attachId2" property="cardNumberAttachId2"/>
+        <result column="phone" property="phone"/>
+    </resultMap>
+
+    <sql id="Base_Column_List_Insert">
+        login_name, password, register_time, update_time, login_nick_name, card_number,
+        card_number_attachId,card_number_attachId2,phone
+    </sql>
+    <sql id="Base_Column_List">
+        id,
+        <include refid="Base_Column_List_Insert"/>
+    </sql>
+
+    <select id="login" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM manager_login where login_name = #{loginName} and password = #{password}
+    </select>
+
+    <select id="queryByLoginName" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from manager_login where login_name = #{loginName}
+    </select>
+
+    <insert id="add" parameterType="com.mlk.soa.home.manager.model.po.ManagerLogin" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into manager_login (<include refid="Base_Column_List_Insert"/>) values
+        (#{loginName}, #{password}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, #{loginNickName}, #{cardNumber},
+        #{cardNumberAttachId}, #{cardNumberAttachId2}, #{phone})
+    </insert>
+
+</mapper>
